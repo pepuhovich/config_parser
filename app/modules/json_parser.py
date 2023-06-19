@@ -1,26 +1,56 @@
 import json
+from pathlib import Path
+
+
+class DeviceConfiguration:
+    def __init__(self, id = None, name = None, description = None, max_frame_size = None, config = None, port_channel_id = None):
+        self.id = id
+        self.name = name
+        self.description = description
+        self.max_frame_size = max_frame_size
+        self.config = config
+        self.port_channel_id = port_channel_id
 
 
 def get_interfaces():
     interface_list = []
-    with open("modules/demo_data.json", "r") as f:
+    path_to_json = Path("./configClear_v2.json")
+    with open(path_to_json, "r") as f:
         json_file = json.load(f)
+        # Path to all interfaces in json file
         all_interface_list = json_file["frinx-uniconfig-topology:configuration"][
             "Cisco-IOS-XE-native:native"
         ]["interface"]
 
-    for interface in (
+    for interface_group in (
+        # Read specific interface types
         all_interface_list["Port-channel"],
         all_interface_list["TenGigabitEthernet"],
         all_interface_list["GigabitEthernet"],
     ):
-        if_id = interface["type"]
-        if_name = interface["name"]
-        if_description[""]
-        if_max_frame_size
-        if_config
-        if_port_channel_id
-        policy_content = Single_Policy(policy_type, policy_name, True)
-        policies_list.append(policy_content)
+        for interface in interface_group:
+            record = {
+                "name": None,
+                "description": None,
+                "max-frame-size": None,
+                "config": None,
+                "port-channel-id": None,
+            }
+            record["name"] = interface["name"]
+            if 'description' in interface:
+                record["description"] = interface["description"]
+            if 'mtu' in interface:
+                record["max-frame-size"] = interface["mtu"]
+            record["config"] = interface
+            if "Cisco-IOS-XE-ethernet:channel-group" in interface:
+                record["port-channel-id"] = interface["Cisco-IOS-XE-ethernet:channel-group"]['number']
+            interface_configuration = DeviceConfiguration(
+                record["name"],
+                record["description"],
+                record["max-frame-size"],
+                record["config"],
+                record["port-channel-id"],
+            )
+            interface_list.append(interface_configuration)
 
-    return policies_list
+    return interface_list
