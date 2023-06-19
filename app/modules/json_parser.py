@@ -3,8 +3,14 @@ from pathlib import Path
 
 
 class DeviceConfiguration:
-    def __init__(self, id = None, name = None, description = None, max_frame_size = None, config = None, port_channel_id = None):
-        self.id = id
+    def __init__(
+        self,
+        name,
+        description,
+        max_frame_size,
+        config,
+        port_channel_id,
+    ):
         self.name = name
         self.description = description
         self.max_frame_size = max_frame_size
@@ -13,8 +19,12 @@ class DeviceConfiguration:
 
 
 def get_interfaces():
+    description = None
+    max_frame_size = None
+    port_channel_id = None
+
     interface_list = []
-    path_to_json = Path("./configClear_v2.json")
+    path_to_json = Path("../configClear_v2.json")
     with open(path_to_json, "r") as f:
         json_file = json.load(f)
         # Path to all interfaces in json file
@@ -29,27 +39,27 @@ def get_interfaces():
         all_interface_list["GigabitEthernet"],
     ):
         for interface in interface_group:
-            record = {
-                "name": None,
-                "description": None,
-                "max-frame-size": None,
-                "config": None,
-                "port-channel-id": None,
-            }
-            record["name"] = interface["name"]
-            if 'description' in interface:
-                record["description"] = interface["description"]
-            if 'mtu' in interface:
-                record["max-frame-size"] = interface["mtu"]
-            record["config"] = interface
-            if "Cisco-IOS-XE-ethernet:channel-group" in interface:
-                record["port-channel-id"] = interface["Cisco-IOS-XE-ethernet:channel-group"]['number']
+            name = interface["name"]
+            try:
+                if "description" in interface:
+                    description = interface["description"]
+            except KeyError:
+                return None
+            try:
+                if "mtu" in interface:
+                    max_frame_size = interface["mtu"]
+            except KeyError:
+                return None
+            config = interface
+            try:
+                if "Cisco-IOS-XE-ethernet:channel-group" in interface:
+                    port_channel_id = interface["Cisco-IOS-XE-ethernet:channel-group"][
+                        "number"
+                    ]
+            except KeyError:
+                return None
             interface_configuration = DeviceConfiguration(
-                record["name"],
-                record["description"],
-                record["max-frame-size"],
-                record["config"],
-                record["port-channel-id"],
+                name, description, max_frame_size, config, port_channel_id
             )
             interface_list.append(interface_configuration)
 
