@@ -27,43 +27,41 @@ def get_interfaces():
         all_interface_list = json_file["frinx-uniconfig-topology:configuration"][
             "Cisco-IOS-XE-native:native"
         ]["interface"]
-    for interface_group in (
-        all_interface_list["Port-channel"],
-        all_interface_list["TenGigabitEthernet"],
-        all_interface_list["GigabitEthernet"],
-    ):
-        for interface in interface_group:
-            print(all_interface_list.keys())
-            name = interface["name"]
-            # Description
-            try:
-                if "description" in interface:
-                    description = interface["description"]
-            except KeyError:
-                return None
-            # MTU
-            max_frame_size = None
-            try:
-                if "mtu" in interface:
-                    max_frame_size = interface["mtu"]
-            except KeyError:
-                return None
-            # Config
-            config = interface
-            # Port channel ID
-            port_channel_id = None
-            try:
+    for k, v in all_interface_list.items():
+        group_name = k
+        if k == "BDI" or k == "Loopback":
+            pass
+        else:
+            for interface in v:
+                if_name = group_name + str(interface["name"])
+                # Description
+                if 'description' in interface:
+                    if_description = interface["description"]
+                else:
+                    if_description = None
+                
+                 # Max frame size
+                if 'mtu' in interface:
+                    if_max_frame_size = interface["mtu"]
+                else:
+                    if_description = None
+                # Config
+                if_config = interface
+                # Port channel ID
                 if "Cisco-IOS-XE-ethernet:channel-group" in interface:
-                    port_channel_id = interface["Cisco-IOS-XE-ethernet:channel-group"][
-                        "number"
-                    ]
-            except KeyError:
-                return None
-            # Create object
-            interface_configuration = DeviceConfiguration(
-                name, description, max_frame_size, config, port_channel_id
-            )
-            interface_list.append(interface_configuration)
+                    if_port_channel_id = interface["Cisco-IOS-XE-ethernet:channel-group"]["number"]
+                else:
+                    if_port_channel_id = None
+
+                # Create object
+                interface_configuration = DeviceConfiguration(
+                    if_name,
+                    if_description,
+                    if_max_frame_size,
+                    if_config,
+                    if_port_channel_id,
+                )
+                interface_list.append(interface_configuration)
 
     return interface_list
 
