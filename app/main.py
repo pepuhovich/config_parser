@@ -6,5 +6,4 @@ if __name__ == "__main__":
     for i in list:
         print(i.name, i.description, i.max_frame_size, i.config, i.port_channel_id)
 
-    interfaces_from_json = get_interfaces()
-    send_to_db(interfaces_from_json)
+    
