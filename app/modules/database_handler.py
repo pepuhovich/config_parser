@@ -2,7 +2,7 @@ import psycopg2
 from modules.config_parser import config
 
 
-def send_to_db(configuration_data):
+def send_to_db(interface_list):
     conn = None
     try:
         # Load database configuration
@@ -11,15 +11,15 @@ def send_to_db(configuration_data):
         # Create connection cursor
         cur = conn.cursor()
         # Insert data to table
-        for data in configuration_data:
+        for interface in interface_list:
             cur.execute(
                 "INSERT INTO interfaces_config(name, description, config, port_channel_id, max_frame_size) VALUES (%s, %s, %s, %s, %s)",
                 (
-                    data.name,
-                    data.description,
-                    data.config,
-                    data.port_channel_id,
-                    data.max_frame_size,
+                    interface.name,
+                    interface.description,
+                    interface.config,
+                    interface.port_channel_id,
+                    interface.max_frame_size,
                 ),
             )
         cur.close()
