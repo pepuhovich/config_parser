@@ -14,56 +14,51 @@ class DeviceConfiguration:
         self.name = name
         self.description = description
         self.max_frame_size = max_frame_size
-        self.config = config
+        self.config = json.dumps(config)
         self.port_channel_id = port_channel_id
 
 
-def get_interfaces():
+def look_for_interfaces():
     path_to_json = Path("../configClear_v2.json")
-    interface_list = []
     with open(path_to_json, "r") as f:
         json_file = json.load(f)
         # Path to all interfaces in json file
         all_interface_list = json_file["frinx-uniconfig-topology:configuration"][
             "Cisco-IOS-XE-native:native"
         ]["interface"]
-    for k, v in all_interface_list.items():
-        group_name = k
-        if k == "BDI" or k == "Loopback":
+
+    return all_interface_list
+
+
+all_interfaces_list = look_for_interfaces()
+
+
+def get_interfaces():
+    interface_list = []
+    for interface_group_name, interface_group_content in all_interfaces_list.items():
+        # Skip BDI and Loopback interfaces
+        # Remove if condition to include BDI and Loopack interfaces in list
+        if interface_group_name == "BDI" or interface_group_name == "Loopback":
             pass
         else:
-            for interface in v:
-                if_name = group_name + str(interface["name"])
-                # Description
-                if 'description' in interface:
-                    if_description = interface["description"]
-                else:
-                    if_description = None
-                
-                 # Max frame size
-                if 'mtu' in interface:
-                    if_max_frame_size = interface["mtu"]
-                else:
-                    if_description = None
-                # Config
-                if_config = interface
-                # Port channel ID
-                if "Cisco-IOS-XE-ethernet:channel-group" in interface:
-                    if_port_channel_id = interface["Cisco-IOS-XE-ethernet:channel-group"]["number"]
-                else:
-                    if_port_channel_id = None
+            for interface in interface_group_content:
+                # Assign dict values to variables
+                interface_name = interface_group_name + str(interface.get("name"))
+                interface_description = interface.get("description")
+                interface_max_frame_size = interface.get("mtu")
+                interface_config = interface
+                interface_port_channel_id = interface.get(
+                    "Cisco-IOS-XE-ethernet:channel-group", {}
+                ).get("number")
 
-                # Create object
+                # Create object from interface values
                 interface_configuration = DeviceConfiguration(
-                    if_name,
-                    if_description,
-                    if_max_frame_size,
-                    if_config,
-                    if_port_channel_id,
+                    interface_name,
+                    interface_description,
+                    interface_max_frame_size,
+                    interface_config,
+                    interface_port_channel_id,
                 )
                 interface_list.append(interface_configuration)
 
     return interface_list
-
-
-get_interfaces()

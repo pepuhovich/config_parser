@@ -23,7 +23,7 @@ def send_to_db(configuration_data):
                 ),
             )
         cur.close()
-    except (Exception, psycopg2.DatabaseError) as error:
+    except (LookupError, psycopg2.DatabaseError) as error:
         print(error)
     finally:
         if conn is not None:
