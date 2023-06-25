@@ -5,7 +5,7 @@ from pathlib import Path
 path_to_config_file = Path("../database/database.ini")
 
 
-def config(filename="../database/database.ini", section="postgresql"):
+def config(filename="database.ini", section="postgresql"):
     parser = ConfigParser()
     parser.read(filename)
     # Load postgres configuration into dict

@@ -19,7 +19,7 @@ class DeviceConfiguration:
 
 
 def look_for_interfaces():
-    path_to_json = Path("../configClear_v2.json")
+    path_to_json = Path("configClear_v2.json")
     with open(path_to_json, "r") as f:
         json_file = json.load(f)
         # Path to all interfaces in json file
