@@ -14,6 +14,7 @@ class DeviceConfiguration:
         self.name = name
         self.description = description
         self.max_frame_size = max_frame_size
+        # Convert dict to json for postgres compatibility
         self.config = json.dumps(config)
         self.port_channel_id = port_channel_id
 

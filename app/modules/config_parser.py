@@ -1,7 +1,7 @@
 from configparser import ConfigParser
 from pathlib import Path
 
-# Fix path to file in func
+
 path_to_config_file = Path("../database/database.ini")
 
 

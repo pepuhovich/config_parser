@@ -13,8 +13,8 @@ services:
     hostname: localhost
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "username", "-d", "database"]
-      interval: 5s
-      timeout: 5s
+      interval: 3s
+      timeout: 3s
       retries: 5
   app :
     build: ./app

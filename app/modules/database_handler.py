@@ -22,11 +22,11 @@ def send_to_db(interface_list):
                     interface.max_frame_size,
                 ),
             )
-        print('Data sent to the database successfully')
+        print("Data sent to the database successfully")
         cur.close()
-        
-    except (psycopg2.DatabaseError) as error:
-        print(f'Error while sending data to the database: {error}')
+
+    except psycopg2.DatabaseError as error:
+        print(f"Error while sending data to the database: {error}")
     finally:
         if conn is not None:
             conn.commit()
