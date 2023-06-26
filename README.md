@@ -1,4 +1,5 @@
 # Python 3rd home assignment
+Purpose of this app is to load interfaces configuration info from provided JSON, store them as objects in a list and then send them to the PostgresQL database. Both app and database are dockerised.
 ## How to run the app
 Starting the app and the database is handled in docker-compose, so there is no need to run anything separately.
 1. Make sure you don't have anything running on localhost port 5432
