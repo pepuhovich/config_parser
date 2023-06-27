@@ -3,10 +3,8 @@ services:
   db:
     build: ./database/
     container_name: postgres_database
-    environment:
-      - POSTGRES_DB=database
-      - POSTGRES_USER=username
-      - POSTGRES_PASSWORD=password
+    env_file:
+      - ./app/database.env
     ports:
       - '5432:5432'
     restart: always

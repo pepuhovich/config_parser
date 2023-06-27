@@ -1,13 +1,25 @@
+import os
 import psycopg2
-from modules.config_parser import config
+from dotenv import load_dotenv
+
+# Load Postgres configuration from .env
+load_dotenv(dotenv_path='database.env')
+db_host = os.getenv('POSTGRES_HOST')
+db_port = os.getenv('POSTGRES_PORT')
+db_name = os.getenv('POSTGRES_DB')
+db_username = os.getenv('POSTGRES_USER')
+db_password = os.getenv('POSTGRES_PASSWORD')
 
 
 def send_to_db(interface_list):
     conn = None
     try:
-        # Load database configuration
-        database_access = config()
-        conn = psycopg2.connect(**database_access)
+        # Create connection from env values
+        conn = psycopg2.connect(host = db_host,
+                                port = db_port,
+                                database = db_name, 
+                                user = db_username,
+                                password = db_password)
         # Create connection cursor
         cur = conn.cursor()
         # Insert data to table

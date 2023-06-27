@@ -1,7 +1,15 @@
 # Python 3rd home assignment
 ## How to run the app
 Starting the app and the database is handled in docker-compose, so there is no need to run anything separately.
-1. Make sure you don't have anything running on localhost port 5432
+1. Create your own Postgres configuration:
+    - Create a file named "database.env" in /app folder and save here following values:
+        ```
+        POSTGRES_HOST=your_value
+        POSTGRES_PORT=your_value
+        POSTGRES_DB=your_value
+        POSTGRES_USER=your_value
+        POSTGRES_PASSWORD=your_value
+        ```
 2. Open terminal in project's root directory
 3. Run this command:
     ```
@@ -12,10 +20,7 @@ Starting the app and the database is handled in docker-compose, so there is no n
 
 ## Check the database
 **A Postgres management tool is recommended for this step for proper output from table**<br>
-1. Login to the database at localhost:5432 with these credentials:
-- database: database
-- username: username
-- password: password
+1. Login to the database with configuration you've set in .env
 2. Use query tool to get output from table:
     ```
     select * from interfaces_config;
